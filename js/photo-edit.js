@@ -9,8 +9,9 @@
   var effectLevelLine = effectLevel.querySelector('.effect-level__line');
   var effectLevelLineDepth = effectLevel.querySelector('.effect-level__depth');
   var effectName = 'none';
-
-
+  var inputHashtags = document.querySelector(".text__hashtags");
+  var inputTextArea = document.querySelector(".text__description");
+  var customValidityMessage = null;
 
 
 
@@ -41,50 +42,45 @@
     }
   };
 
-
-
   effectLevel.classList.add('hidden');
+  inputHashtags.addEventListener("change", checkInputHashTag);
+  inputTextArea.addEventListener("change", checkTextAreaInput);
 
   effects.forEach(effect => {
     effect.addEventListener('change', changeEffectHandler);
   })
 
+
   effectLevelLine.addEventListener('click', clickHandler);
   effectLevelPin.addEventListener('mousedown', mouseDownHandler);
 
+  var mousedownFired = false;
+
   function clickHandler(e) {
     e.preventDefault();
-    if (e.offsetX >= 0 && e.offsetX <= effectLevelLine.offsetWidth) {
-      effectLevelPin.style.left = e.offsetX + "px";
+    if (mousedownFired) {
+      mousedownFired = false;
+      return;
     }
-    var currValue = Math.round(e.offsetX / effectLevelLine.offsetWidth * 100);
-    effectLevelLineDepth.style.width = currValue + "%";
-    effectLevelValue.setAttribute("value", currValue);
-    setEffectValue();
+    var position = e.offsetX;
+    setValue(position);
   }
+
 
   function mouseDownHandler(e) {
     e.preventDefault();
+    mousedownFired = true;
     var startX = e.clientX;
-
 
     function mouseMoveHandler(e) {
       e.preventDefault();
       var shift = startX - e.clientX;
-      startX = e.clientX;
       var position = effectLevelPin.offsetLeft - shift;
-      if (position >= 0 && position <= effectLevelLine.offsetWidth) {
-        effectLevelPin.style.left = position + "px";
-      }
-      var currValue = Math.round(position / effectLevelLine.offsetWidth * 100);
-      effectLevelLineDepth.style.width = currValue + "%";
-      effectLevelValue.setAttribute("value", currValue);
-      setEffectValue();
+      startX = e.clientX;
+      setValue(position);
     }
 
-
-
-    function mouseUpHandler() {
+    function mouseUpHandler(e) {
       e.preventDefault();
       document.removeEventListener('mousemove', mouseMoveHandler);
       document.removeEventListener('mouseup', mouseUpHandler);
@@ -94,9 +90,17 @@
     document.addEventListener('mouseup', mouseUpHandler);
   }
 
+  function setValue(position) {
+    if (position >= 0 && position <= effectLevelLine.offsetWidth) {
+      effectLevelPin.style.left = `${position}px`;
+    }
+    var currValue = Math.round(position / effectLevelLine.offsetWidth * 100);
+    effectLevelLineDepth.style.width = `${currValue}%`;
+    effectLevelValue.setAttribute("value", currValue);
+    updateEffectValue();
+  }
 
-
-  function setEffectValue() {
+  function updateEffectValue() {
     var effect = effectsMap[effectName];
     var value = parseInt(effectLevelValue.getAttribute("value"), 10);
     var effectValue = (effect.maxValue - effect.minValue) / 100 * value + effect.minValue;
@@ -122,7 +126,7 @@
   }
 
   function changeEffectHandler(e) {
-    imgUploadPreview.classList.remove(`effects__preview--${effectName}`);
+    resetEffects();
     effectName = e.target.value;
     if (effectName === 'none') {
       effectLevel.classList.add('hidden');
@@ -130,11 +134,66 @@
       effectLevel.classList.remove('hidden');
     }
     imgUploadPreview.classList.add(`effects__preview--${effectName}`);
-    effectLevelValue.setAttribute("value", 100);
-    effectLevelLineDepth.style.width = 100 + "%";
-    effectLevelPin.style.left = effectLevelLine.offsetWidth + "px";
-    setEffectValue();
+    updateEffectValue();
   }
+
+  function resetEffects() {
+    if (effectName !== 'none') {
+      imgUploadPreview.classList.remove(`effects__preview--${effectName}`);
+    }
+    effectLevelValue.setAttribute("value", 100);
+    effectLevelLineDepth.style.width = "100%";
+    effectLevelPin.style.left = "100%";
+
+  }
+
+  function checkTextAreaInput() {
+    if (inputTextArea.value.length > 140) {
+      customValidityMessage = "Длина комментария не может составлять больше 140 символов";
+    }
+    checkValidity(inputTextArea);
+  }
+
+  function checkInputHashTag() {
+    var fieldValue = (inputHashtags.value || '').trim().replace(/\s{2,}/g, ' ');
+    inputHashtags.value = fieldValue;
+    if (fieldValue) {
+      var arrInputHashtag = fieldValue.split(" ");
+      if (arrInputHashtag.length > 5) {
+        customValidityMessage =
+          "Количество хеш-тегов не должно превышать 5";
+      }
+      arrInputHashtag.forEach(element => {
+        if (element[0] !== "#") {
+          customValidityMessage =
+            "Хэш-тег должен начинаться с символа #";
+        } else if (element.length < 2) {
+          customValidityMessage =
+            "Длина Хеш-тега не должна быть меньше 2 символов";
+        } else if (element.length > 20) {
+          customValidityMessage =
+            "Длина Хеш-тега не должна превышать 20 символов";
+        } else if (element.split('#').length > 2) {
+          customValidityMessage = 'Хэш-теги должны разделяться пробелами';
+        } else if (arrInputHashtag.filter(item => item === element).length > 1) {
+          inputHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
+        }
+      });
+      checkValidity(inputHashtags);
+    }
+  }
+
+  function checkValidity(element) {
+    if (customValidityMessage) {
+      element.style.outline = '2px solid red';
+      element.setCustomValidity(customValidityMessage);
+    } else {
+      element.setCustomValidity("");
+      element.style.outline = '';
+    }
+  }
+
+
 
 
 

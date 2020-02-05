@@ -571,7 +571,7 @@ main {
   top: 50%;
   right: 20px;
   left: 20px;
-
+  cursor: pointer;
   height: 5px;
 
   font-size: 0;
