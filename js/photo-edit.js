@@ -13,8 +13,6 @@
   var inputTextArea = document.querySelector(".text__description");
   var customValidityMessage = null;
 
-
-
   var effectsMap = {
     chrome: {
       minValue: 0,
@@ -65,7 +63,6 @@
     var position = e.offsetX;
     setValue(position);
   }
-
 
   function mouseDownHandler(e) {
     e.preventDefault();
@@ -149,9 +146,13 @@
 
   function checkTextAreaInput() {
     if (inputTextArea.value.length > 140) {
-      customValidityMessage = "Длина комментария не может составлять больше 140 символов";
+      inputTextArea.setCustomValidity("Длина комментария не может составлять больше 140 символов");
+      inputTextArea.style.outline = '2px solid red';
+    } else {
+      inputTextArea.setCustomValidity = null;
+      inputTextArea.style.outline = '';
     }
-    checkValidity(inputTextArea);
+
   }
 
   function checkInputHashTag() {
@@ -164,7 +165,7 @@
           "Количество хеш-тегов не должно превышать 5";
       }
       arrInputHashtag.forEach(element => {
-        if (element[0] !== "#") {
+        if (element.length >= 1 && element[0] !== "#") {
           customValidityMessage =
             "Хэш-тег должен начинаться с символа #";
         } else if (element.length < 2) {
@@ -177,6 +178,8 @@
           customValidityMessage = 'Хэш-теги должны разделяться пробелами';
         } else if (arrInputHashtag.filter(item => item === element).length > 1) {
           inputHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
+        } else {
+          customValidityMessage = "";
         }
       });
       checkValidity(inputHashtags);
@@ -192,9 +195,6 @@
       element.style.outline = '';
     }
   }
-
-
-
 
 
 })();
