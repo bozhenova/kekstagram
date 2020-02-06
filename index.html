@@ -288,14 +288,14 @@
       </section>
 
       <!-- Полноэкранный показ изображения -->
-      <section class="big-picture  overlay  hidden">
-        <h2 class="big-picture__title  visually-hidden">Просмотр фотографии</h2>
+      <section class="big-picture overlay hidden">
+        <h2 class="big-picture__title visually-hidden">Просмотр фотографии</h2>
         <div class="big-picture__preview">
           <!-- Просмотр изображения -->
           <div class="big-picture__img">
             <img
               src="img/logo-background-3.jpg"
-              alt="Девушка в купальнике"
+              alt=""
               width="600"
               height="600"
             />
@@ -319,32 +319,9 @@
 
             <!-- Комментарии к изображению -->
             <div class="social__comment-count">
-              2 из <span class="comments-count"></span> комментариев
+              5 из <span class="comments-count"></span> комментариев
             </div>
-            <ul class="social__comments">
-              <li class="social__comment">
-                <img
-                  class="social__picture"
-                  src="img/avatar-4.svg"
-                  alt="Аватар комментатора фотографии"
-                  width="35"
-                  height="35"
-                />
-                <p class="social__text">
-                  Мега фото! Просто обалдеть. Как вам так удалось?
-                </p>
-              </li>
-              <li class="social__comment">
-                <img
-                  class="social__picture"
-                  src="img/avatar-3.svg"
-                  alt="Аватар комментатора фотографии"
-                  width="35"
-                  height="35"
-                />
-                <p class="social__text">Да это фоташоп!!!!!!!!</p>
-              </li>
-            </ul>
+            <ul class="social__comments"></ul>
 
             <!-- Кнопка для загрузки новой порции комментариев -->
             <button
@@ -444,13 +421,7 @@
     <!-- Шаблон изображения случайного пользователя -->
     <template id="picture">
       <a href="#" class="picture">
-        <img
-          class="picture__img"
-          src=""
-          width="182"
-          height="182"
-          alt="Случайная фотография"
-        />
+        <img class="picture__img" src="" width="182" height="182" alt="" />
         <p class="picture__info">
           <span class="picture__comments"></span>
           <span class="picture__likes"></span>

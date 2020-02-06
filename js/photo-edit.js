@@ -11,7 +11,7 @@
   var effectName = 'none';
   var inputHashtags = document.querySelector(".text__hashtags");
   var inputTextArea = document.querySelector(".text__description");
-  var customValidityMessage = null;
+  var customValidityMessage = "";
 
   var effectsMap = {
     chrome: {
@@ -149,7 +149,7 @@
       inputTextArea.setCustomValidity("Длина комментария не может составлять больше 140 символов");
       inputTextArea.style.outline = '2px solid red';
     } else {
-      inputTextArea.setCustomValidity = null;
+      inputTextArea.setCustomValidity("");
       inputTextArea.style.outline = '';
     }
 
@@ -178,12 +178,12 @@
           customValidityMessage = 'Хэш-теги должны разделяться пробелами';
         } else if (arrInputHashtag.filter(item => item === element).length > 1) {
           inputHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
-        } else {
-          customValidityMessage = "";
         }
       });
-      checkValidity(inputHashtags);
+    } else {
+      customValidityMessage = "";
     }
+    checkValidity(inputHashtags);
   }
 
   function checkValidity(element) {
