@@ -13,32 +13,6 @@
   var loadMore = bigPicture.querySelector('.social__comments-loader');
 
 
-  var photos = 25;
-
-  var commentsArray = [
-    'Всё отлично!',
-    'В целом всё неплохо. Но не всё.',
-    'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-    'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-    'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-    'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
-  ];
-
-  var descriptionsArray = [
-    'Тестим новую камеру!',
-    'Затусили с друзьями на море',
-    'Как же круто тут кормят',
-    'Отдыхаем...',
-    'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
-    'Вот это тачка!'
-  ];
-
-  var MIN_COMMENTS = 1;
-  var MAX_COMMENTS = 8;
-
-  var pictures = picturesGeneration();
-  showPictures();
-
   bigPictureCancelButton.addEventListener('click', closeBigPictureOverlay);
 
   bigPictureCancelButton.addEventListener('keydown', (e) => {
@@ -47,13 +21,13 @@
     }
   });
 
+
   function clickOverlayHandler(e) {
     e.preventDefault();
     if (e.target === bigPicture) {
       closeBigPictureOverlay();
     }
   }
-
 
   function closeBigPictureOverlay() {
     bigPicture.classList.add('hidden');
@@ -68,37 +42,6 @@
     }
   }
 
-
-  function getRandomNum(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  function commentsGeneration(commentsCount) {
-    var comments = [];
-    for (var i = 0; i < commentsCount; i++) {
-      var comment = commentsArray[getRandomNum(0, commentsArray.length - 1)];
-      comments.push(comment);
-    }
-    return comments;
-  }
-
-  function picturesGeneration() {
-    var pictures = [];
-    for (var i = 1; i <= photos; i++) {
-      var numberOfComments = getRandomNum(MIN_COMMENTS, MAX_COMMENTS);
-      var picture = {
-        url: `photos/${i}.jpg`,
-        likes: getRandomNum(15, 200),
-        comments: commentsGeneration(numberOfComments),
-        description:
-          descriptionsArray[getRandomNum(0, descriptionsArray.length - 1)]
-      };
-      pictures.push(picture);
-    }
-
-    return pictures;
-  }
-
   function createPicture(picture) {
     var pictureElement = pictureTemplate.cloneNode(true);
     pictureElement.querySelector('.picture__img').src = picture.url;
@@ -109,19 +52,21 @@
     pictureElement.addEventListener('click', e => {
       e.preventDefault();
       openBigPicture(picture);
+      document.body.classList.add('modal-open');
     });
     return pictureElement;
   }
 
-  function showPictures() {
+
+
+  function successHandler(pictures) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < pictures.length; i++) {
+    for (var i = 0; i < 25; i++) {
       var picture = createPicture(pictures[i]);
       fragment.appendChild(picture);
     }
     picturesContainer.appendChild(fragment);
   }
-
 
   function openBigPicture(picture) {
 
@@ -151,20 +96,38 @@
 
     function createComment(comment) {
       var commentElement = commentTemplate.cloneNode(true);
-      commentElement.querySelector('.social__picture').src = "img/avatar-" +
-        getRandomNum(1, 6) + ".svg";
+      commentElement.querySelector('.social__picture').src = comment.avatar;
       commentElement.querySelector('.social__text').textContent =
-        comment;
+        comment.message;
       return commentElement;
     }
 
-    commentCounter.classList.add('visually-hidden');
-    loadMore.classList.add('visually-hidden');
+    //TODO: добавить loadmore и comment counter
+
+    // commentCounter.classList.add('visually-hidden');
+    // loadMore.classList.add('visually-hidden');
 
     bigPicture.classList.remove('hidden');
 
     document.addEventListener('keydown', escPressHandler);
     bigPicture.addEventListener('click', clickOverlayHandler);
   }
+
+
+  function errorHandler(errorMessage) {
+    var node = document.createElement('div');
+    node.classList.add('error-message');
+    node.style = 'display: block; z-index: 100; margin: 0 auto; text-align: center; background-color: red; padding: 15px;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '40px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  }
+
+  window.load(successHandler, errorHandler);
+
 
 })();

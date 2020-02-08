@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-
+  var picturesContainer = document.querySelector('.pictures');
   var uploadFileButton = document.getElementById('upload-file');
   var imgUploadOverlay = document.querySelector(".img-upload__overlay");
   var effectLevel = document.querySelector('.effect-level');
@@ -12,6 +12,8 @@
   var scaleControlValue = document.querySelector('.scale__control--value');
 
   uploadFileButton.addEventListener('change', openUploadOverlay);
+
+  //FIXME: при загрузке той же фотографии не всплывает окно
 
   uploadCancelButton.addEventListener('click', closeUploadOverlay);
 
@@ -59,5 +61,27 @@
     effectLevel.classList.add('hidden');
   }
 
+  var form = picturesContainer.querySelector('.img-upload__form');
+  form.addEventListener('submit', e => {
+    window.save(new FormData(form), function () {
+      imgUploadOverlay.classList.add('hidden');
+      resetOverlaySettings();
+    }, errorHandler);
+    e.preventDefault();
+  });
+
+
+  function errorHandler(errorMessage) {
+    var node = document.createElement('div');
+    node.classList.add('error-message');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '40px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  }
 
 })();
