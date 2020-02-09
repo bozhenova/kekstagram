@@ -5,17 +5,37 @@
   var uploadFileButton = document.getElementById('upload-file');
   var imgUploadOverlay = document.querySelector(".img-upload__overlay");
   var effectLevel = document.querySelector('.effect-level');
+  var defaultEffect = document.querySelector('.effects__radio[value="none"]');
   var inputHashtags = document.querySelector(".text__hashtags");
   var inputTextArea = document.querySelector(".text__description");
   var uploadCancelButton = document.getElementById('upload-cancel');
   var imgUploadPreview = document.querySelector('.img-upload__preview img');
   var scaleControlValue = document.querySelector('.scale__control--value');
 
-  uploadFileButton.addEventListener('change', openUploadOverlay);
+  //upload a default image
+  // uploadFileButton.addEventListener('change', openUploadOverlay);
+
+
+  //upload an image
+  uploadFileButton.addEventListener('change', uploadImage);
+  function uploadImage() {
+    if (this.files && this.files[0]) {
+      imgUploadPreview.src = URL.createObjectURL(this.files[0]);
+      imgUploadPreview.height = 600;
+      imgUploadPreview.onload = () => {
+        URL.revokeObjectURL(this.src);
+      }
+    }
+    imgUploadOverlay.classList.remove('hidden');
+    document.addEventListener('keydown', escPressHandler);
+    imgUploadOverlay.addEventListener('click', clickOverlayHandler);
+  }
+
 
   //FIXME: при загрузке той же фотографии не всплывает окно
 
   uploadCancelButton.addEventListener('click', closeUploadOverlay);
+
 
   uploadCancelButton.addEventListener('keydown', e => {
     if (e.code === 'Enter') {
@@ -59,6 +79,7 @@
     imgUploadPreview.style.transform = 'scale(1)';
     scaleControlValue.setAttribute("value", "100%");
     effectLevel.classList.add('hidden');
+    defaultEffect.checked = true;
   }
 
   var form = picturesContainer.querySelector('.img-upload__form');

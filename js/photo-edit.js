@@ -13,32 +13,6 @@
   var inputTextArea = document.querySelector(".text__description");
   var customValidityMessage = "";
 
-  var effectsMap = {
-    chrome: {
-      minValue: 0,
-      maxValue: 1,
-    },
-    sepia: {
-      minValue: 0,
-      maxValue: 1,
-    },
-    marvin: {
-      minValue: 0,
-      maxValue: 100,
-    },
-    phobos: {
-      minValue: 0,
-      maxValue: 3,
-    },
-    heat: {
-      minValue: 1,
-      maxValue: 3,
-    },
-    none: {
-      minValue: 0,
-      maxValue: 0,
-    }
-  };
 
   effectLevel.classList.add('hidden');
   inputHashtags.addEventListener("change", checkInputHashTag);
@@ -47,7 +21,6 @@
   effects.forEach(effect => {
     effect.addEventListener('change', changeEffectHandler);
   })
-
 
   effectLevelLine.addEventListener('click', clickHandler);
   effectLevelPin.addEventListener('mousedown', mouseDownHandler);
@@ -94,33 +67,54 @@
     var currValue = Math.round(position / effectLevelLine.offsetWidth * 100);
     effectLevelLineDepth.style.width = `${currValue}%`;
     effectLevelValue.setAttribute("value", currValue);
-    updateEffectValue();
+    setEffectValue();
   }
 
-  function updateEffectValue() {
-    var effect = effectsMap[effectName];
-    var value = parseInt(effectLevelValue.getAttribute("value"), 10);
-    var effectValue = (effect.maxValue - effect.minValue) / 100 * value + effect.minValue;
-    switch (effectName) {
-      case 'chrome':
-        imgUploadPreview.style.filter = `grayscale(${effectValue})`;
-        break;
-      case 'sepia':
-        imgUploadPreview.style.filter = `sepia(${effectValue})`;
-        break;
-      case 'marvin':
-        imgUploadPreview.style.filter = `invert(${effectValue}%)`;
-        break;
-      case 'phobos':
-        imgUploadPreview.style.filter = `blur(${effectValue}px)`;
-        break;
-      case 'heat':
-        imgUploadPreview.style.filter = `brightness(${effectValue})`;
-        break;
-      default:
-        imgUploadPreview.style.filter = 'none';
+  function setEffectValue() {
+    var effectsMap = {
+      chrome: {
+        minValue: 0,
+        maxValue: 1,
+        filter: `grayscale`,
+        units: ''
+      },
+      sepia: {
+        minValue: 0,
+        maxValue: 1,
+        filter: `sepia`,
+        units: ''
+      },
+      marvin: {
+        minValue: 0,
+        maxValue: 100,
+        filter: `invert`,
+        units: '%'
+      },
+      phobos: {
+        minValue: 0,
+        maxValue: 3,
+        filter: `blur`,
+        units: 'px'
+      },
+      heat: {
+        minValue: 1,
+        maxValue: 3,
+        filter: `brightness`,
+        units: ''
+      }
+    };
+
+    if (effectName !== 'none') {
+      var value = parseInt(effectLevelValue.getAttribute("value"), 10);
+      var effect = effectsMap[effectName];
+      var effectValue = (effect.maxValue - effect.minValue) / 100 * value + effect.minValue;
+      var filter = `${effect.filter}(${effectValue}${effect.units})`;
+      imgUploadPreview.style.filter = filter;
+    } else {
+      imgUploadPreview.style.filter = 'none';
     }
   }
+
 
   function changeEffectHandler(e) {
     resetEffects();
@@ -131,17 +125,14 @@
       effectLevel.classList.remove('hidden');
     }
     imgUploadPreview.classList.add(`effects__preview--${effectName}`);
-    updateEffectValue();
+    setEffectValue();
   }
 
   function resetEffects() {
-    if (effectName !== 'none') {
-      imgUploadPreview.classList.remove(`effects__preview--${effectName}`);
-    }
+    imgUploadPreview.classList.remove(`effects__preview--${effectName}`);
     effectLevelValue.setAttribute("value", 100);
     effectLevelLineDepth.style.width = "100%";
     effectLevelPin.style.left = "100%";
-
   }
 
   function checkTextAreaInput() {
@@ -158,6 +149,7 @@
   function checkInputHashTag() {
     var fieldValue = (inputHashtags.value || '').trim().replace(/\s{2,}/g, ' ');
     inputHashtags.value = fieldValue;
+    customValidityMessage = "";
     if (fieldValue) {
       var arrInputHashtag = fieldValue.split(" ");
       if (arrInputHashtag.length > 5) {
@@ -165,23 +157,25 @@
           "Количество хеш-тегов не должно превышать 5";
       }
       arrInputHashtag.forEach(element => {
-        if (element.length >= 1 && element[0] !== "#") {
-          customValidityMessage =
-            "Хэш-тег должен начинаться с символа #";
-        } else if (element.length < 2) {
+        if (element.length < 2) {
           customValidityMessage =
             "Длина Хеш-тега не должна быть меньше 2 символов";
-        } else if (element.length > 20) {
+        }
+        if (element[0] !== "#") {
+          customValidityMessage =
+            "Хэш-тег должен начинаться с символа #";
+        }
+        if (arrInputHashtag.filter(item => item.toLowerCase() === element.toLowerCase()).length > 1) {
+          customValidityMessage = 'Один и тот же хэш-тег не может быть использован дважды';
+        }
+        if (element.length > 20) {
           customValidityMessage =
             "Длина Хеш-тега не должна превышать 20 символов";
-        } else if (element.split('#').length > 2) {
+        }
+        if (element.split('#').length > 2) {
           customValidityMessage = 'Хэш-теги должны разделяться пробелами';
-        } else if (arrInputHashtag.filter(item => item === element).length > 1) {
-          inputHashtags.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
         }
       });
-    } else {
-      customValidityMessage = "";
     }
     checkValidity(inputHashtags);
   }
