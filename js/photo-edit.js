@@ -1,17 +1,17 @@
 'use strict';
 
 (function () {
-  var imgUploadPreview = document.querySelector('.img-upload__preview img');
-  var effects = document.querySelectorAll('.effects__radio');
-  var effectLevel = document.querySelector('.effect-level');
-  var effectLevelValue = effectLevel.querySelector('.effect-level__value');
-  var effectLevelPin = effectLevel.querySelector('.effect-level__pin');
-  var effectLevelLine = effectLevel.querySelector('.effect-level__line');
-  var effectLevelLineDepth = effectLevel.querySelector('.effect-level__depth');
-  var effectName = 'none';
-  var inputHashtags = document.querySelector(".text__hashtags");
-  var inputTextArea = document.querySelector(".text__description");
-  var customValidityMessage = "";
+  const imgUploadPreview = document.querySelector('.img-upload__preview img');
+  const effects = document.querySelectorAll('.effects__radio');
+  const effectLevel = document.querySelector('.effect-level');
+  const effectLevelValue = effectLevel.querySelector('.effect-level__value');
+  const effectLevelPin = effectLevel.querySelector('.effect-level__pin');
+  const effectLevelLine = effectLevel.querySelector('.effect-level__line');
+  const effectLevelLineDepth = effectLevel.querySelector('.effect-level__depth');
+  const inputHashtags = document.querySelector(".text__hashtags");
+  const inputTextArea = document.querySelector(".text__description");
+  let customValidityMessage = "";
+  let effectName = 'none';
 
 
   effectLevel.classList.add('hidden');
@@ -25,7 +25,7 @@
   effectLevelLine.addEventListener('click', clickHandler);
   effectLevelPin.addEventListener('mousedown', mouseDownHandler);
 
-  var mousedownFired = false;
+  let mousedownFired = false;
 
   function clickHandler(e) {
     e.preventDefault();
@@ -33,19 +33,19 @@
       mousedownFired = false;
       return;
     }
-    var position = e.offsetX;
+    const position = e.offsetX;
     setValue(position);
   }
 
   function mouseDownHandler(e) {
     e.preventDefault();
     mousedownFired = true;
-    var startX = e.clientX;
+    let startX = e.clientX;
 
     function mouseMoveHandler(e) {
       e.preventDefault();
-      var shift = startX - e.clientX;
-      var position = effectLevelPin.offsetLeft - shift;
+      const shift = startX - e.clientX;
+      const position = effectLevelPin.offsetLeft - shift;
       startX = e.clientX;
       setValue(position);
     }
@@ -64,14 +64,14 @@
     if (position >= 0 && position <= effectLevelLine.offsetWidth) {
       effectLevelPin.style.left = `${position}px`;
     }
-    var currValue = Math.round(position / effectLevelLine.offsetWidth * 100);
+    const currValue = Math.round(position / effectLevelLine.offsetWidth * 100);
     effectLevelLineDepth.style.width = `${currValue}%`;
     effectLevelValue.setAttribute("value", currValue);
     setEffectValue();
   }
 
   function setEffectValue() {
-    var effectsMap = {
+    const effectsMap = {
       chrome: {
         minValue: 0,
         maxValue: 1,
@@ -105,16 +105,17 @@
     };
 
     if (effectName !== 'none') {
-      var value = parseInt(effectLevelValue.getAttribute("value"), 10);
-      var effect = effectsMap[effectName];
-      var effectValue = (effect.maxValue - effect.minValue) / 100 * value + effect.minValue;
-      var filter = `${effect.filter}(${effectValue}${effect.units})`;
+      const value = parseInt(effectLevelValue.getAttribute("value"), 10);
+      const effect = effectsMap[effectName];
+      const effectValue = (effect.maxValue - effect.minValue) / 100 * value + effect.minValue;
+      const filter = `${effect.filter}(${effectValue}${effect.units})`;
       imgUploadPreview.style.filter = filter;
     } else {
       imgUploadPreview.style.filter = 'none';
     }
   }
 
+  // TODO: add scrubbing with keyboard
 
   function changeEffectHandler(e) {
     resetEffects();
@@ -147,11 +148,11 @@
   }
 
   function checkInputHashTag() {
-    var fieldValue = (inputHashtags.value || '').trim().replace(/\s{2,}/g, ' ');
+    const fieldValue = (inputHashtags.value || '').trim().replace(/\s{2,}/g, ' ');
     inputHashtags.value = fieldValue;
     customValidityMessage = "";
     if (fieldValue) {
-      var arrInputHashtag = fieldValue.split(" ");
+      const arrInputHashtag = fieldValue.split(" ");
       if (arrInputHashtag.length > 5) {
         customValidityMessage =
           "Количество хеш-тегов не должно превышать 5";

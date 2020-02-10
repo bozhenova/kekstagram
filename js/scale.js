@@ -1,14 +1,14 @@
 'use strict';
 
 (function () {
-  var imgUploadPreview = document.querySelector('.img-upload__preview img');
-  var scaleControlSmaller = document.querySelector('.scale__control--smaller');
-  var scaleControlBigger = document.querySelector('.scale__control--bigger');
-  var scaleControlValue = document.querySelector('.scale__control--value');
-  var scaleValue = parseInt(scaleControlValue.value, 10);
-  var MIN_VALUE = 25;
-  var MAX_VALUE = 100;
-  var STEP = 25;
+  const imgUploadPreview = document.querySelector('.img-upload__preview img');
+  const scaleControlSmaller = document.querySelector('.scale__control--smaller');
+  const scaleControlBigger = document.querySelector('.scale__control--bigger');
+  const scaleControlValue = document.querySelector('.scale__control--value');
+  let scaleValue = parseInt(scaleControlValue.value, 10);
+  const MIN_VALUE = 25;
+  const MAX_VALUE = 100;
+  const STEP = 25;
 
   scaleControlBigger.addEventListener('click', e => {
     e.preventDefault();

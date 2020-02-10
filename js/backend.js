@@ -3,12 +3,12 @@
 (function () {
 
   window.save = function (data, onLoad, onError) {
-    var URL = 'https://js.dump.academy/kekstagram/';
-    var xhr = new XMLHttpRequest();
+    const URL = 'https://js.dump.academy/kekstagram/';
+    const xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', () => {
-      var errorMessage = document.querySelector('.error-message');
+      const errorMessage = document.querySelector('.error-message');
       if (xhr.status === 200) {
         if (errorMessage) {
           document.body.removeChild(errorMessage);
@@ -28,8 +28,8 @@
   }
 
   window.load = function (onLoad, onError) {
-    var URL = 'https://js.dump.academy/kekstagram/data';
-    var xhr = new XMLHttpRequest();
+    const URL = 'https://js.dump.academy/kekstagram/data';
+    const xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', () => {

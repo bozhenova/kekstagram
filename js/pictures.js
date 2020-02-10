@@ -1,16 +1,21 @@
 'use strict';
 
 (function () {
-  var picturesContainer = document.querySelector('.pictures');
-  var pictureTemplate = document
+  const picturesContainer = document.querySelector('.pictures');
+  const pictureTemplate = document
     .getElementById('picture')
     .content.querySelector('.picture');
-  var bigPicture = document.querySelector('.big-picture');
-  var bigPictureCancelButton = bigPicture.querySelector('.big-picture__cancel');
-  var commentTemplate = document.getElementById('comment').content.querySelector('.social__comment');
-  var commentsContainer = bigPicture.querySelector('.social__comments');
-  var commentCounter = bigPicture.querySelector('.social__comment-count');
-  var loadMore = bigPicture.querySelector('.social__comments-loader');
+  const bigPicture = document.querySelector('.big-picture');
+  const bigPictureCancelButton = bigPicture.querySelector('.big-picture__cancel');
+  const commentTemplate = document.getElementById('comment').content.querySelector('.social__comment');
+  const commentsContainer = bigPicture.querySelector('.social__comments');
+  const commentCounter = bigPicture.querySelector('.social__comment-count');
+  const loadMore = bigPicture.querySelector('.social__comments-loader');
+  const imgFilters = document.querySelector('.img-filters');
+  const imgFiltersButton = imgFilters.querySelectorAll('.img-filters__button');
+  const filterPopular = document.getElementById('filter-popular');
+  const filterRandom = document.getElementById('filter-random');
+  const filterDiscussed = document.getElementById('filter-discussed');
 
 
   bigPictureCancelButton.addEventListener('click', closeBigPictureOverlay);
@@ -20,7 +25,6 @@
       closeBigPictureOverlay();
     }
   });
-
 
   function clickOverlayHandler(e) {
     e.preventDefault();
@@ -43,7 +47,7 @@
   }
 
   function createPicture(picture) {
-    var pictureElement = pictureTemplate.cloneNode(true);
+    const pictureElement = pictureTemplate.cloneNode(true);
     pictureElement.querySelector('.picture__img').src = picture.url;
     pictureElement.querySelector('.picture__likes').textContent =
       picture.likes;
@@ -57,15 +61,69 @@
     return pictureElement;
   }
 
+  function changeButtonColor(element) {
+    imgFiltersButton.forEach(button => button.classList.remove('img-filters__button--active'));
+    element.classList.add('img-filters__button--active');
+  }
 
+  function removePictures() {
+    while (picturesContainer.querySelector('.picture')) {
+      picturesContainer.removeChild(picturesContainer.querySelector('.picture'));
+    }
+  }
 
-  function successHandler(pictures) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < 25; i++) {
-      var picture = createPicture(pictures[i]);
+  function shuffle(array) {
+    let counter = array.length;
+    while (counter > 0) {
+      const index = Math.floor(Math.random() * counter);
+      counter--;
+      const temp = array[counter];
+      array[counter] = array[index];
+      array[index] = temp;
+    }
+    return array;
+  }
+
+  function filterRandomHandler(pictures) {
+    changeButtonColor(filterRandom);
+    removePictures();
+    const fragment = document.createDocumentFragment();
+    const newArr = pictures.slice();
+    const shuffledPictures = shuffle(newArr);
+    for (let i = 0; i < 10; i++) {
+      const picture = createPicture(shuffledPictures[i]);
       fragment.appendChild(picture);
     }
     picturesContainer.appendChild(fragment);
+  }
+
+  function filterDiscussedHandler(pictures) {
+    changeButtonColor(filterDiscussed);
+    removePictures();
+    const fragment = document.createDocumentFragment();
+    const newArr = pictures.slice();
+    newArr.sort((a, b) => { return b.comments.length - a.comments.length; });
+    for (let i = 0; i < 25; i++) {
+      const picture = createPicture(newArr[i]);
+      fragment.appendChild(picture);
+    }
+    picturesContainer.appendChild(fragment);
+  }
+
+  function filterPopularHandler(pictures) {
+    changeButtonColor(filterPopular);
+    removePictures();
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < 25; i++) {
+      const picture = createPicture(pictures[i]);
+      fragment.appendChild(picture);
+    }
+    picturesContainer.appendChild(fragment);
+    imgFilters.classList.remove('img-filters--inactive');
+
+    filterPopular.addEventListener('click', filterPopularHandler.bind(pictures, ...arguments));
+    filterRandom.addEventListener('click', filterRandomHandler.bind(pictures, ...arguments));
+    filterDiscussed.addEventListener('click', filterDiscussedHandler.bind(pictures, ...arguments));
   }
 
   function openBigPicture(picture) {
@@ -85,17 +143,17 @@
 
     function showComments(picture) {
       commentsContainer.innerHTML = "";
-      var fragment = document.createDocumentFragment();
-      var commentsLength = picture.comments.length;
-      for (var i = 0; i < commentsLength; i++) {
-        var comment = createComment(picture.comments[i]);
+      const fragment = document.createDocumentFragment();
+      const commentsLength = picture.comments.length;
+      for (let i = 0; i < commentsLength; i++) {
+        const comment = createComment(picture.comments[i]);
         fragment.appendChild(comment);
       }
       commentsContainer.appendChild(fragment);
     }
 
     function createComment(comment) {
-      var commentElement = commentTemplate.cloneNode(true);
+      const commentElement = commentTemplate.cloneNode(true);
       commentElement.querySelector('.social__picture').src = comment.avatar;
       commentElement.querySelector('.social__text').textContent =
         comment.message;
@@ -115,7 +173,7 @@
 
 
   function errorHandler(errorMessage) {
-    var node = document.createElement('div');
+    const node = document.createElement('div');
     node.classList.add('error-message');
     node.style = 'display: block; z-index: 100; margin: 0 auto; text-align: center; background-color: red; padding: 15px;';
     node.style.position = 'absolute';
@@ -127,7 +185,7 @@
     document.body.insertAdjacentElement('afterbegin', node);
   }
 
-  window.load(successHandler, errorHandler);
+  window.load(filterPopularHandler, errorHandler);
 
 
 })();
