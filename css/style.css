@@ -1263,7 +1263,7 @@ main {
 
 .img-upload__message {
   position: absolute;
-  z-index: 2;
+  z-index: 100;
   left: 50%;
   top: 0;
 
@@ -1297,7 +1297,7 @@ main {
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 1;
+  z-index: 100;
 
   background-color: rgba(0, 0, 0, 0.8);
 }

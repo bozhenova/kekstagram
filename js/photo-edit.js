@@ -1,22 +1,15 @@
 'use strict';
 
 (function () {
-  const imgUploadPreview = document.querySelector('.img-upload__preview img');
   const effects = document.querySelectorAll('.effects__radio');
-  const effectLevel = document.querySelector('.effect-level');
-  const effectLevelValue = effectLevel.querySelector('.effect-level__value');
-  const effectLevelPin = effectLevel.querySelector('.effect-level__pin');
-  const effectLevelLine = effectLevel.querySelector('.effect-level__line');
-  const effectLevelLineDepth = effectLevel.querySelector('.effect-level__depth');
-  const inputHashtags = document.querySelector(".text__hashtags");
-  const inputTextArea = document.querySelector(".text__description");
-  let customValidityMessage = "";
+  window.effectLevel = document.querySelector('.effect-level');
+  const effectLevelValue = window.effectLevel.querySelector('.effect-level__value');
+  const effectLevelPin = window.effectLevel.querySelector('.effect-level__pin');
+  const effectLevelLine = window.effectLevel.querySelector('.effect-level__line');
+  const effectLevelLineDepth = window.effectLevel.querySelector('.effect-level__depth');
   let effectName = 'none';
 
-
-  effectLevel.classList.add('hidden');
-  inputHashtags.addEventListener("change", checkInputHashTag);
-  inputTextArea.addEventListener("change", checkTextAreaInput);
+  window.effectLevel.classList.add('hidden');
 
   effects.forEach(effect => {
     effect.addEventListener('change', changeEffectHandler);
@@ -109,9 +102,9 @@
       const effect = effectsMap[effectName];
       const effectValue = (effect.maxValue - effect.minValue) / 100 * value + effect.minValue;
       const filter = `${effect.filter}(${effectValue}${effect.units})`;
-      imgUploadPreview.style.filter = filter;
+      window.imgUploadPreview.style.filter = filter;
     } else {
-      imgUploadPreview.style.filter = 'none';
+      window.imgUploadPreview.style.filter = 'none';
     }
   }
 
@@ -121,75 +114,19 @@
     resetEffects();
     effectName = e.target.value;
     if (effectName === 'none') {
-      effectLevel.classList.add('hidden');
+      window.effectLevel.classList.add('hidden');
     } else {
-      effectLevel.classList.remove('hidden');
+      window.effectLevel.classList.remove('hidden');
     }
-    imgUploadPreview.classList.add(`effects__preview--${effectName}`);
+    window.imgUploadPreview.classList.add(`effects__preview--${effectName}`);
     setEffectValue();
   }
 
   function resetEffects() {
-    imgUploadPreview.classList.remove(`effects__preview--${effectName}`);
+    window.imgUploadPreview.classList.remove(`effects__preview--${effectName}`);
     effectLevelValue.setAttribute("value", 100);
     effectLevelLineDepth.style.width = "100%";
     effectLevelPin.style.left = "100%";
   }
-
-  function checkTextAreaInput() {
-    if (inputTextArea.value.length > 140) {
-      inputTextArea.setCustomValidity("Длина комментария не может составлять больше 140 символов");
-      inputTextArea.style.outline = '2px solid red';
-    } else {
-      inputTextArea.setCustomValidity("");
-      inputTextArea.style.outline = '';
-    }
-
-  }
-
-  function checkInputHashTag() {
-    const fieldValue = (inputHashtags.value || '').trim().replace(/\s{2,}/g, ' ');
-    inputHashtags.value = fieldValue;
-    customValidityMessage = "";
-    if (fieldValue) {
-      const arrInputHashtag = fieldValue.split(" ");
-      if (arrInputHashtag.length > 5) {
-        customValidityMessage =
-          "Количество хеш-тегов не должно превышать 5";
-      }
-      arrInputHashtag.forEach(element => {
-        if (element.length < 2) {
-          customValidityMessage =
-            "Длина Хеш-тега не должна быть меньше 2 символов";
-        }
-        if (element[0] !== "#") {
-          customValidityMessage =
-            "Хэш-тег должен начинаться с символа #";
-        }
-        if (arrInputHashtag.filter(item => item.toLowerCase() === element.toLowerCase()).length > 1) {
-          customValidityMessage = 'Один и тот же хэш-тег не может быть использован дважды';
-        }
-        if (element.length > 20) {
-          customValidityMessage =
-            "Длина Хеш-тега не должна превышать 20 символов";
-        }
-        if (element.split('#').length > 2) {
-          customValidityMessage = 'Хэш-теги должны разделяться пробелами';
-        }
-      });
-    }
-    checkValidity(inputHashtags);
-  }
-
-  function checkValidity(element) {
-    if (customValidityMessage) {
-      element.style.outline = '2px solid red';
-      element.setCustomValidity(customValidityMessage);
-    } else {
-      element.setCustomValidity("");
-      element.style.outline = '';
-    }
-  }
-
 
 })();
