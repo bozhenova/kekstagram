@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   window.save = function (data, onLoad, onError) {
     const URL = 'https://js.dump.academy/kekstagram/';
     const xhr = new XMLHttpRequest();

@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   window.utils = {
     errorHandler:
       function (errorMessage) {

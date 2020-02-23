@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   let customValidityMessage = "";
   window.inputHashtags = document.querySelector(".text__hashtags");
   window.inputTextArea = document.querySelector(".text__description");

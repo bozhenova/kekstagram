@@ -11,39 +11,39 @@
 
   uploadFileButton.addEventListener('change', window.utils.uploadImage);
 
-
   //TODO: add error catching
 
-  uploadCancelButton.addEventListener('click', closeUploadOverlay);
+  uploadCancelButton.addEventListener('click', window.overlayCloseHandler);
 
   uploadCancelButton.addEventListener('keydown', e => {
     if (e.code === 'Enter') {
-      closeUploadOverlay();
+      window.overlayCloseHandler();
     }
   });
 
   window.openUploadOverlay = function () {
     imgUploadOverlay.classList.remove('hidden');
-    document.addEventListener('keydown', escPressHandler);
-    imgUploadOverlay.addEventListener('click', clickOverlayHandler);
+    document.addEventListener('keydown', window.escPressHandler);
+    imgUploadOverlay.addEventListener('click', overlayClickHandler);
   }
 
-  function clickOverlayHandler(e) {
+  function overlayClickHandler(e) {
+    e.preventDefault();
     if (e.target === imgUploadOverlay) {
-      closeUploadOverlay();
+      window.overlayCloseHandler();
     }
   }
 
-  function closeUploadOverlay() {
+  window.overlayCloseHandler = function () {
     imgUploadOverlay.classList.add('hidden');
-    document.removeEventListener('keydown', escPressHandler);
-    imgUploadOverlay.removeEventListener('click', clickOverlayHandler);
+    document.removeEventListener('keydown', window.escPressHandler);
+    imgUploadOverlay.removeEventListener('click', overlayClickHandler);
     resetOverlaySettings();
   }
 
-  function escPressHandler(e) {
+  window.escPressHandler = function (e) {
     if (e.code === 'Escape' && e.target !== window.inputHashtags && e.target !== window.inputTextArea) {
-      closeUploadOverlay();
+      window.overlayCloseHandler();
     }
   }
 
