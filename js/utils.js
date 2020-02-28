@@ -2,6 +2,16 @@
 
 (function () {
   window.utils = {
+    isEscEvent:
+      function (e) {
+        return e.code === 'Escape';
+      },
+
+    isEnterEvent:
+      function (e) {
+        return e.code === 'Enter';
+      },
+
     errorHandler:
       function (errorMessage) {
         const node = document.createElement('div');
@@ -15,10 +25,11 @@
         node.textContent = errorMessage;
         document.body.insertAdjacentElement('afterbegin', node);
       },
+
     uploadImage:
       function () {
-        const successTemplate = document.getElementById('success').content;
-        const messagesTemplate = document.getElementById('messages').content;
+        const successTemplate = document.querySelector('#success').content;
+        const messagesTemplate = document.querySelector('#messages').content;
         const success = successTemplate.cloneNode(true);
         const messages = messagesTemplate.cloneNode(true);
         document.body.append(messages);
@@ -34,13 +45,13 @@
               loadingMessage.remove();
               document.body.append(success);
               const successOverlay = document.querySelector('.success');
-              const successButton = document.querySelector('.success__button');
-              successButton.addEventListener('click', () => successOverlay.style.display = 'none');
+              document.addEventListener('click', () => successOverlay.remove());
+              document.removeEventListener('click', () => successOverlay.remove());
             }
           }, 1000);
         }
       }
-  }
+  };
 
 
 })();

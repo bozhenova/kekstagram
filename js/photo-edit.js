@@ -108,8 +108,6 @@
     }
   }
 
-  // TODO: add scrubbing with keyboard
-
   function changeEffectHandler(e) {
     resetEffects();
     effectName = e.target.value;
