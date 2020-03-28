@@ -21,7 +21,7 @@
   const filterRandom = document.querySelector('#filter-random');
   const filterDiscussed = document.querySelector('#filter-discussed');
   let commentsCounter = 0;
-  let comments = [];
+
 
   bigPictureCancelButton.addEventListener('click', bigPictureCloseOverlay);
   bigPictureCancelButton.addEventListener('keydown', enterPressHandler);
@@ -61,7 +61,7 @@
       picture.likes;
     pictureElement.querySelector('.picture__comments').textContent =
       picture.comments.length;
-    pictureElement.addEventListener('click', openBigPicture.bind([], picture));
+    pictureElement.addEventListener('click', () => openBigPicture(picture));
     return pictureElement;
   }
 
@@ -128,7 +128,7 @@
   function createBigPicture(picture) {
     commentsContainer.innerHTML = '';
     commentsCounter = 0;
-    comments = picture.comments.slice();
+    let comments = picture.comments.slice();
     if (comments.length < COMMENTS_STEP) {
       loadMore.classList.add('hidden');
       socialCommentCount.classList.add('hidden');
@@ -148,6 +148,7 @@
     bigPicture.addEventListener('click', overlayClickHandler);
     bigPicture.classList.remove('hidden');
     showComments(comments);
+    loadMore.addEventListener('click', () => showComments(comments));
   }
 
 
@@ -166,7 +167,7 @@
       }));
       commentsContainer.append(fragment);
       commentsLoaded.textContent = `${commentsCounter}`;
-      loadMore.addEventListener('click', showComments.bind([], comments), { once: true });
+
     }
   }
 
