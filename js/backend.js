@@ -27,7 +27,7 @@
   }
 
   window.load = function (onLoad, onError) {
-    const URL = 'https://js.dump.academy/kekstagram/data';
+    const URL = 'https://cors-anywhere.herokuapp.com/https://js.dump.academy/kekstagram/data';
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
